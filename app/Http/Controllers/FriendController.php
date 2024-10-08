@@ -55,29 +55,27 @@ class FriendController extends Controller
     public function store(User $user)
     {
         if (!$user) {
-            return Redirect::back()->withErrors(['message' => 'This user could not be found']);
+            return Redirect::back()->with('error', 'Данный пользователь не найден');
         }
 
-        Auth::user()->addFriend($user->id);
-        //event(new FriendRequestReceivedEvent($user));
+        Auth::user()->addFriend($user->id); 
         return Redirect::back();
     }
 
     public function update(User $user)
     {
         if (!$user) {
-            return Redirect::back()->withErrors(['message' => 'This user could not be found']);
+            return Redirect::back()->with('error', 'Данный пользователь не найден');
         }
 
         Auth::user()->acceptFriend($user->id);
-        //event(new FriendRequestAcceptedEvent($user));
         return Redirect::back();
     }
 
     public function destroy(User $user)
     {
         if (!$user) {
-            return Redirect::back()->withErrors(['message' => 'This user could not be found']);
+            return Redirect::back()->with('error', 'Данный пользователь не найден');
         }
 
         Auth::user()->deleteFriend($user->id);
@@ -87,7 +85,7 @@ class FriendController extends Controller
     public function canselRequest(User $user)
     {
         if (!$user) {
-            return Redirect::back()->withErrors(['message' => 'This user could not be found']);
+            return Redirect::back()->with('error', 'Данный пользователь не найден');
         }
 
         Auth::user()->canselFriendRequest($user->id);
@@ -97,7 +95,7 @@ class FriendController extends Controller
     public function deny(User $user)
     {
         if (!$user) {
-            return Redirect::back()->withErrors(['message' => 'This user could not be found']);
+            return Redirect::back()->with('error', 'Данный пользователь не найден');
         }
 
         Auth::user()->denyFriend($user->id);
