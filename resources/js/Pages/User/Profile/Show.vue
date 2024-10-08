@@ -4,12 +4,20 @@ import {ref} from "vue";
 import CreatePost from "@/Pages/User/Profile/CreatePost.vue";
 import Posts from "@/Pages/User/Profile/Posts.vue";
 import AllMedia from "@/Pages/User/Profile/AllMedia.vue";
+import Status from "@/Pages/User/Profile/FriendStatus/Status.vue";
+import {Link} from "@inertiajs/vue3";
 
 const props = defineProps({
     user: Object,
     media: Object,
     counterMedia: Number,
     counterPosts: Number,
+    friendsCount: Number,
+    followersCount: Number,
+    isFriendsWith: Number,
+    friendRequestSentTo: Number,
+    friendRequestReceivedFrom: Number,
+    followingCount: Number,
 });
 
 const isShowFullAbout = ref(false);
@@ -50,10 +58,12 @@ const isShowFullAbout = ref(false);
                             </svg>
                         </span>
 
-                        <a class="bg-amber-500 px-2 py-1 text-white font-semibold text-sm rounded block text-center sm:inline-block block"
-                           href="#">
-                            Добавить в друзья
-                        </a>
+                        <template v-if="user.id !== $page.props.auth.user.id">
+                            <Status :friendRequestReceivedFrom="friendRequestReceivedFrom"
+                                    :friendRequestSentTo="friendRequestSentTo"
+                                    :isFriendsWith="isFriendsWith"
+                                    :user="user"/>
+                        </template>
                     </div>
 
                     <ul class="hidden md:flex space-x-8 mb-4 text-gray-600 dark:text-gray-300">
@@ -61,20 +71,30 @@ const isShowFullAbout = ref(false);
                             <span class="font-semibold dark:text-white">
                                 {{ user.posts.length }}
                             </span>
-                            публикаций
+                            {{
+                                `публикаци${user.posts.length % 10 === 1 && user.posts.length % 100 !== 11 ? 'я' : user.posts.length % 10 >= 2 && user.posts.length % 10 <= 4 && (user.posts.length % 100 < 10 || user.posts.length % 100 >= 20) ? 'и' : 'й'}`
+                            }}
                         </li>
 
                         <li>
-                            <span class="font-semibold dark:text-white">40.5k</span>
-                            подписчиков
+                            <Link :href="route('friends.followers', user)">
+                                <span class="font-semibold dark:text-white">{{ followersCount }}</span>
+                                {{
+                                    followersCount === 1 ? 'подписчик' : followersCount < 5 ? 'подписчика' : 'подписчиков'
+                                }}
+                            </Link>
                         </li>
                         <li>
-                            <span class="font-semibold dark:text-white">302</span>
-                            подписок
+                            <Link :href="route('friends.following', user)">
+                                <span class="font-semibold dark:text-white">{{ followingCount }}</span>
+                                {{ followingCount === 1 ? 'подписка' : followingCount < 5 ? 'подписки' : 'подписок' }}
+                            </Link>
                         </li>
                         <li>
-                            <span class="font-semibold dark:text-white">111</span>
-                            друзей
+                            <Link :href="route('friends.index', user)">
+                                <span class="font-semibold dark:text-white">{{ friendsCount }}</span>
+                                {{ friendsCount === 1 ? 'друг' : friendsCount < 5 ? 'друга' : 'друзей' }}
+                            </Link>
                         </li>
                     </ul>
 
@@ -109,16 +129,28 @@ const isShowFullAbout = ref(false);
                         <span class="font-semibold text-gray-800 dark:text-white block">
                             {{ user.posts.length }}
                         </span>
-                        публикаций
+                        {{
+                            `публикаци${user.posts.length % 10 === 1 && user.posts.length % 100 !== 11 ? 'я' : user.posts.length % 10 >= 2 && user.posts.length % 10 <= 4 && (user.posts.length % 100 < 10 || user.posts.length % 100 >= 20) ? 'и' : 'й'}`
+                        }}
                     </li>
 
                     <li>
-                        <span class="font-semibold text-gray-800 dark:text-white block">40.5k</span>
-                        подписчиков
+                        <Link :href="route('friends.followers', user)">
+                            <span class="font-semibold text-gray-800 dark:text-white block">{{ followersCount }}</span>
+                            {{ followersCount === 1 ? 'подписчик' : followersCount < 5 ? 'подписчика' : 'подписчиков' }}
+                        </Link>
                     </li>
                     <li>
-                        <span class="font-semibold text-gray-800 dark:text-white block">302</span>
-                        подписок
+                        <Link :href="route('friends.following', user)">
+                            <span class="font-semibold text-gray-800 dark:text-white block">{{ followingCount }}</span>
+                            {{ followingCount === 1 ? 'подписка' : followingCount < 5 ? 'подписки' : 'подписок' }}
+                        </Link>
+                    </li>
+                    <li>
+                        <Link :href="route('friends.index', user)">
+                            <span class="font-semibold text-gray-800 dark:text-white block">{{ friendsCount }}</span>
+                            {{ friendsCount === 1 ? 'друг' : friendsCount < 5 ? 'друга' : 'друзей' }}
+                        </Link>
                     </li>
                 </ul>
 

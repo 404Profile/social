@@ -15,7 +15,7 @@ class LikeController extends Controller
     {
         $liked = false;
 
-        if ($request->has('post')) {
+        if (!empty($request->post)) {
             $likedPost = Like::query()
                 ->where('user_id', Auth::id())
                 ->where('likeable_type', 'post')
@@ -30,8 +30,9 @@ class LikeController extends Controller
                 $this->like($request);
                 $liked = true;
             }
+
             return response()->json(['liked' => $post->likes()->count(), 'isUserLikedPost' => $liked]);
-        } elseif ($request->has('media')) {
+        } elseif (!empty($request->media)) {
             $likedMedia = Like::query()
                 ->where('user_id', Auth::id())
                 ->where('likeable_type', 'media')
@@ -46,8 +47,9 @@ class LikeController extends Controller
                 $this->like($request);
                 $liked = true;
             }
+
             return response()->json(['liked' => $media->likes()->count(), 'isUserLikedMedia' => $liked]);
-        } elseif ($request->has('comment')) {
+        } elseif (!empty($request->comment)) {
             $likedComment = Like::query()
                 ->where('user_id', Auth::id())
                 ->where('likeable_type', 'comment')
@@ -62,6 +64,7 @@ class LikeController extends Controller
                 $this->like($request);
                 $liked = true;
             }
+
             return response()->json(['liked' => $comment->likes()->count(), 'isUserLikedComment' => $liked]);
         }
     }
@@ -75,17 +78,17 @@ class LikeController extends Controller
     {
         $like = new Like();
 
-        if ($request->has('post')) {
+        if (!empty($request->post)) {
             $like->user_id = Auth::id();
             $like->like = true;
             $like->likeable_type = 'post';
             $like->post_id = $request['post.id'];
-        } elseif ($request->has('media')) {
+        } elseif (!empty($request->media)) {
             $like->user_id = Auth::id();
             $like->like = true;
             $like->likeable_type = 'media';
             $like->media_id = $request['media.id'];
-        } elseif ($request->has('comment')) {
+        } elseif (!empty($request->comment)) {
             $like->user_id = Auth::id();
             $like->like = true;
             $like->likeable_type = 'comment';

@@ -36,6 +36,7 @@ class CreateNewUser implements CreatesNewUsers
             'age' => $input['age'],
             'gender' => $input['gender'],
             'password' => Hash::make($input['password']),
+            'last_activity' => now()->getTimestamp(),
         ]);
     }
 }

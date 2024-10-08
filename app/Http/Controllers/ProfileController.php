@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Media;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class ProfileController extends Controller
@@ -12,7 +13,7 @@ class ProfileController extends Controller
     {
         $user->load([
             'posts' => function ($query) {
-                $query->orderByDesc('created_at');
+                $query->orderByDesc('id');
             }, 'posts.media.comments', 'posts.likes', 'posts.comments'
         ]);
 
@@ -30,6 +31,12 @@ class ProfileController extends Controller
             'media' => $media,
             'counterMedia' => $counterMedia,
             'counterPosts' => $counterPosts,
+            'friendsCount' => count($user->friends()),
+            'followersCount' => count($user->pendingFriendRequests()),
+            'isFriendsWith' => Auth::user()->isFriendsWith($user->id),
+            'friendRequestSentTo' => Auth::user()->hasPendingFriendRequestSentTo($user->id),
+            'friendRequestReceivedFrom' => Auth::user()->hasPendingFriendRequestFrom($user->id),
+            'followingCount' => count($user->pendingFriendRequestsSent()),
         ]);
     }
 }

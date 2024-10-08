@@ -1,8 +1,9 @@
 <script setup>
 import {ref} from "vue";
-import InputError from "@/Components/InputError.vue";
 import {useForm} from "@inertiajs/vue3";
 import axios from "axios";
+import Like from "@/Pages/User/Profile/Like.vue";
+import Comment from "@/Pages/User/Profile/Comment.vue";
 
 const props = defineProps({
     user: Object,
@@ -50,48 +51,12 @@ const backMedia = () => {
     getNewMedia();
 }
 
-const storeLikedMedia = (media) => {
-    axios.post(route('liked'), {
-        media: media,
-    }).then(response => {
-        const updatedMedia = props.media.find(m => m.id === media.id);
-
-        if (updatedMedia) {
-            updatedMedia.liked = response.data.liked;
-            updatedMedia.isUserLikedMedia = response.data.isUserLikedMedia;
-        }
-    })
-}
-
-const storeLikedComment = (currentElement, comment) => {
-    axios.post(route('liked'), {
-        comment: comment,
-    }).then(response => {
-        const updatedComment = currentElement.comments.find(c => c.id === comment.id);
-
-        if (updatedComment) {
-            updatedComment.liked = response.data.liked;
-            updatedComment.isUserLikedComment = response.data.isUserLikedComment;
-        }
-    })
-}
-
 const getNewMedia = () => {
     axios.post(route('getMedia'), {
         index: currentIndex.value,
         user: props.user,
     }).then(response => {
         currentElement.value = response.data.newMedia;
-    })
-}
-
-const createComment = () => {
-    axios.post(route('createComment'), {
-        mediaId: currentElement.value['id'],
-        body: form.body,
-    }).then(response => {
-        currentElement.value.comments = [response.data.comment, ...currentElement.value.comments];
-        form.reset('body');
     })
 }
 </script>
@@ -179,18 +144,7 @@ const createComment = () => {
                             </div>
 
                             <div class="mb-2 pl-2 flex">
-                                <div
-                                    :class="currentElement.isUserLikedMedia ? 'text-rose-500' : 'text-gray-700 dark:text-gray-300'"
-                                    class="flex mr-2 text-sm mr-4 cursor-pointer"
-                                    @click="storeLikedMedia(currentElement)">
-                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path
-                                            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                                            stroke-linecap="round" stroke-linejoin="round"
-                                            stroke-width="2"/>
-                                    </svg>
-                                    <span>{{ currentElement.liked }}</span>
-                                </div>
+                                <Like :media="currentElement"/>
 
                                 <div
                                     class="flex mr-2 text-gray-700 dark:text-gray-300 text-sm mr-4">
@@ -207,78 +161,7 @@ const createComment = () => {
                             </div>
                         </div>
 
-                        <div class="w-full py-4">
-                            <div class="px-4 py-2 bg-white rounded-t-lg dark:bg-gray-800 mb-2">
-                                <label class="sr-only" for="comment">Комментарий</label>
-                                <textarea id="body"
-                                          v-model="form.body"
-                                          class="w-full h-20 min-h-14 max-h-20 px-0 text-sm text-gray-900 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400"
-                                          placeholder="Прокомментировать..."
-                                          required rows="3"/>
-
-                                <InputError :message="form.errors.body" class="mt-2"/>
-                            </div>
-
-                            <div class="flex justify-end">
-                                <button
-                                    class="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-amber-600 rounded-lg focus:ring-1 focus:ring-amber-700 hover:bg-amber-700"
-                                    type="submit"
-                                    @click="createComment">
-                                    Опубликовать
-                                </button>
-                            </div>
-                        </div>
-
-                        <div
-                            class="md:fixed md:top-[17rem] md:right-0 md:bottom-5 overflow-y-auto block md:w-1/3">
-                            <template v-for="comment in currentElement.comments">
-                                <div
-                                    class="relative bg-slate-50 rounded-xl overflow-hidden dark:bg-slate-800/25 max-w-3xl mx-auto mx-4 mb-6">
-                                    <div class="relative rounded-xl overflow-auto p-5">
-                                        <div class="flex w-full">
-                                            <div>
-                                                <img :alt="comment.user.fullName"
-                                                     :src="comment.user.profile_photo_url"
-                                                     :title="comment.user.fullName"
-                                                     class="w-12 h-12 rounded-full object-cover mr-4 shadow">
-                                            </div>
-                                            <div class="w-full">
-                                                <div>
-                                                    <div class="sm:flex md:block 2xl:flex items-center justify-between">
-                                                        <h2
-                                                            class="text-lg font-semibold text-gray-900 dark:text-gray-300 -mt-1">
-                                                            {{ comment.user.fullName }}
-                                                        </h2>
-                                                        <small class="text-sm text-gray-500 dark:text-gray-400">
-                                                            {{ comment.timeAgo }}
-                                                        </small>
-                                                    </div>
-                                                    <p class="mt-3 text-gray-700 dark:text-gray-300 text-sm">
-                                                        {{ comment.body }}
-                                                    </p>
-                                                </div>
-
-                                                <div class="mt-4 flex items-center">
-                                                    <div
-                                                        :class="comment.isUserLikedComment ? 'text-rose-500' : 'text-gray-700 dark:text-gray-300'"
-                                                        class="flex mr-2 text-sm mr-4 cursor-pointer"
-                                                        @click="storeLikedComment(currentElement, comment)">
-                                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor"
-                                                             viewBox="0 0 24 24">
-                                                            <path
-                                                                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                                                                stroke-linecap="round" stroke-linejoin="round"
-                                                                stroke-width="2"></path>
-                                                        </svg>
-                                                        <span>{{ comment.liked }}</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </template>
-                        </div>
+                        <Comment :media="currentElement"/>
 
                     </div>
                 </div>

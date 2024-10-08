@@ -14,10 +14,10 @@ class CommentController extends Controller
         $comment->user_id = Auth::id();
         $comment->body = $request['body'];
 
-        if ($request['postId']) {
-            $comment->post_id = $request['postId'];
-        } elseif ($request['mediaId']) {
-            $comment->media_id = $request['mediaId'];
+        if (!empty($request->post)) {
+            $comment->post_id = $request->post['id'];
+        } elseif (!empty($request->media)) {
+            $comment->media_id = $request->media['id'];
         }
 
         $comment->save();

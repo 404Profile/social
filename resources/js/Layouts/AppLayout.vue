@@ -7,8 +7,8 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import ThemeSwitcher from '@/Components/ThemeSwitcher.vue';
-import AsideButton from '@/Components/AsideButton.vue';
 import ToastNotification from "@/Components/ToastNotification.vue";
+import AsideNavigation from "@/Components/AsideNavigation.vue";
 
 defineProps({
     title: String,
@@ -51,7 +51,7 @@ const closeModalMenu = () => {
                             <!-- Logo -->
                             <div class="shrink-0 flex items-center">
                                 <Link :href="route('dashboard')">
-                                    <ApplicationMark class="block h-9 w-auto"/>
+                                    <ApplicationMark class="block h-9 w-auto hover:text-amber-400"/>
                                 </Link>
                             </div>
 
@@ -175,40 +175,7 @@ const closeModalMenu = () => {
 
             <div class="max-w-8xl mx-auto px-4 sm:px-6 md:px-8">
                 <!-- Left Menu -->
-                <aside
-                    class="hidden lg:block fixed z-50 inset-0 top-[4rem] right-auto w-[19rem] pb-10 pl-8 pr-6 py-8 overflow-y-auto bg-white dark:bg-gray-800 border-r border-gray-100 dark:border-gray-700">
-                    <nav>
-                        <ul class="-mx-2 flex flex-col gap-y-2">
-                            <li>
-                                <AsideButton :active="route().current('dashboard')" :href="route('dashboard')">
-                                    <svg aria-hidden="true" class="h-6 w-6" data-slot="icon"
-                                         fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"
-                                         xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"></path>
-                                    </svg>
-                                    Приборная панель
-                                </AsideButton>
-                            </li>
-
-                            <li>
-                                <AsideButton :active="route().current('userProfile', $page.props.auth.user.id)"
-                                             :href="route('userProfile', $page.props.auth.user.id)">
-                                    <svg class="h-6 w-6" fill="none" stroke="currentColor"
-                                         stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"/>
-                                    </svg>
-                                    Мой профиль
-                                </AsideButton>
-                            </li>
-                        </ul>
-                    </nav>
-                </aside>
+                <AsideNavigation/>
 
                 <!-- Page Content -->
                 <main class="lg:pl-[19.5rem] py-8">
