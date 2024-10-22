@@ -10,13 +10,15 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('comments', function (Blueprint $table) {
+        Schema::create('messages', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('thread_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('post_id')->nullable()->constrained()->cascadeOnDelete();
-            $table->foreignId('media_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->integer('type')->index();
             $table->text('body');
-            $table->timestamps();
+            $table->uuid('reply_to_id')->nullable()->index();
+            $table->boolean('edited')->default(false);
+            $table->timestamps(6);
         });
     }
 
@@ -25,6 +27,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('comments');
+        Schema::dropIfExists('messages');
     }
 };

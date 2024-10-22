@@ -27,20 +27,20 @@ class PostController extends Controller
         if ($request->hasFile('files')) {
             Validator::make($request->all(), [
                 'body' => ['nullable', 'string', 'max:65535'],
-                'parent_id' => ['required'],
+                'owner_user_id' => ['required'],
                 'files.*' => ['required', 'max:5120', 'mimes:jpg,png,gif,jpeg'],
             ])->validate();
         } else {
             Validator::make($request->all(), [
                 'body' => ['required', 'string', 'max:65535'],
-                'parent_id' => ['required'],
+                'owner_user_id' => ['required'],
                 'files.*' => ['nullable', 'max:5120', 'mimes:jpg,png,gif,jpeg'],
             ])->validate();
         }
 
         $post = new Post();
-        $post->user_id = Auth::id();
-        $post->parent_id = $request['parent_id'];
+        $post->author_user_id = Auth::id();
+        $post->owner_user_id = $request['owner_user_id'];
         $post->body = $request['body'];
         $post->save();
 

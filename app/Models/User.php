@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Traits\HasFriendTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -29,12 +30,14 @@ class User extends Authenticatable
         'name',
         'surname',
         'email',
-        'isShow',
+        'private',
         'age',
-        'location',
+        'country',
+        'city',
         'gender',
         'about',
         'password',
+        'role_id',
     ];
 
     /**
@@ -57,16 +60,42 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
         'fullName',
+        'location',
     ];
+
+    public function hasRole($role): bool
+    {
+        return (bool) $this->roles()->where('title', $role)->first();
+    }
+
+    public function roles(): HasOne
+    {
+        return $this->hasOne(Role::class);
+    }
+
+    public function isAdmin(): bool
+    {
+        return (bool) $this->roles()->where('title', 'Администратор')->first();
+    }
+
+    public function isUser(): bool
+    {
+        return (bool) $this->roles()->where('title', 'Пользователь')->first();
+    }
 
     public function getFullNameAttribute()
     {
         return $this->name.' '.$this->surname;
     }
 
+    public function getLocationAttribute()
+    {
+        return $this->country.' '.$this->city;
+    }
+
     public function posts()
     {
-        return $this->hasMany(Post::class, 'parent_id');
+        return $this->hasMany(Post::class, 'owner_user_id');
     }
 
     public function comments()

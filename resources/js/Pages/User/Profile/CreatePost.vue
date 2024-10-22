@@ -13,7 +13,7 @@ const MAX_IMAGES = 5;
 
 const form = useForm({
     body: '',
-    parent_id: props.user.id,
+    owner_user_id: props.user.id,
     files: [],
 });
 

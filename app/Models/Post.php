@@ -16,8 +16,8 @@ class Post extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'user_id',
-        'parent_id',
+        'author_user_id',
+        'owner_user_id',
         'body',
     ];
 
@@ -68,7 +68,7 @@ class Post extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'author_user_id');
     }
 
     public function media()

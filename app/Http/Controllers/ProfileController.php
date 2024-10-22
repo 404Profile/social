@@ -18,11 +18,11 @@ class ProfileController extends Controller
         ]);
 
         $media = Media::query()->with('post', 'comments')->where('user_id', $user->id)
-            ->whereRelation('post', 'parent_id', $user->id)
+            ->whereRelation('post', 'owner_user_id', $user->id)
             ->orderByDesc('id')->take(4)->get();
 
         $counterMedia = Media::query()->with('post')->where('user_id', $user->id)
-            ->whereRelation('post', 'parent_id', $user->id)->count();
+            ->whereRelation('post', 'owner_user_id', $user->id)->count();
 
         $counterPosts = count($user->posts);
 

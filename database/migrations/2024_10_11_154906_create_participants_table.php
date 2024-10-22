@@ -10,14 +10,12 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('likes', function (Blueprint $table) {
+        Schema::create('participants', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('thread_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('like')->default(0);
-            $table->string('likeable_type');
-            $table->foreignId('post_id')->nullable()->constrained()->cascadeOnDelete();
-            $table->foreignId('media_id')->nullable()->constrained()->cascadeOnDelete();
-            $table->foreignId('comment_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->boolean('admin')->default(false);
+            $table->boolean('muted')->default(false);
             $table->timestamps();
         });
     }
@@ -27,6 +25,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('likes');
+        Schema::dropIfExists('participants');
     }
 };

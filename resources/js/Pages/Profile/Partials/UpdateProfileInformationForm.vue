@@ -17,9 +17,10 @@ const form = useForm({
     _method: 'PUT',
     name: props.user.name,
     surname: props.user.surname,
-    isShow: !!props.user.isShow,
+    private: !!props.user.private,
     age: props.user.age + '',
-    location: props.user.location,
+    country: props.user.country,
+    city: props.user.city,
     gender: props.user.gender,
     about: props.user.about,
     email: props.user.email,
@@ -205,17 +206,17 @@ const clearPhotoFileInput = () => {
                 </p>
                 <div class="relative flex gap-x-3">
                     <div class="flex h-6 items-center">
-                        <input id="isShow"
-                               v-model="form.isShow"
-                               :checked="form.isShow"
+                        <input id="private"
+                               v-model="form.private"
+                               :checked="form.private"
                                class="h-4 w-4 rounded border-gray-300 text-amber-600 focus:ring-amber-600"
                                type="checkbox">
                     </div>
                     <div class="flex items-center leading-6">
-                        <InputLabel :value="form.isShow ? 'Показывать' : 'Не показывать'" for="isShow"/>
+                        <InputLabel :value="form.private ? 'Не показывать' : 'Показывать'" for="private"/>
                     </div>
                 </div>
-                <InputError :message="form.errors.isShow" class="mt-2"/>
+                <InputError :message="form.errors.private" class="mt-2"/>
             </div>
 
             <div class="col-span-6 sm:col-span-4">
@@ -232,16 +233,29 @@ const clearPhotoFileInput = () => {
             </div>
 
             <div class="col-span-6 sm:col-span-4">
-                <InputLabel for="location" value="Место проживания"/>
+                <InputLabel for="country" value="Страна проживания"/>
                 <TextInput
-                    id="location"
-                    v-model="form.location"
-                    autocomplete="location"
+                    id="country"
+                    v-model="form.country"
+                    autocomplete="country"
                     class="mt-1 block w-full"
                     type="text"
                 />
 
-                <InputError :message="form.errors.location" class="mt-2"/>
+                <InputError :message="form.errors.country" class="mt-2"/>
+            </div>
+
+            <div class="col-span-6 sm:col-span-4">
+                <InputLabel for="city" value="Город проживания"/>
+                <TextInput
+                    id="city"
+                    v-model="form.city"
+                    autocomplete="city"
+                    class="mt-1 block w-full"
+                    type="text"
+                />
+
+                <InputError :message="form.errors.city" class="mt-2"/>
             </div>
 
             <div class="col-span-6 sm:col-span-4">

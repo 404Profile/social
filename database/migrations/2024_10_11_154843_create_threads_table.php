@@ -10,11 +10,11 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('posts', function (Blueprint $table) {
+        Schema::create('threads', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('author_user_id')->references('id')->on('users')->cascadeOnDelete();
-            $table->foreignId('owner_user_id')->references('id')->on('users')->cascadeOnDelete();
-            $table->text('body')->nullable();
+            $table->string('title');
+            $table->string('type');
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('posts');
+        Schema::dropIfExists('threads');
     }
 };
