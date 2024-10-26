@@ -4,23 +4,6 @@ import {useDark} from '@vueuse/core'
 
 const isDark = useDark();
 
-defineProps({
-    canLogin: {
-        type: Boolean,
-    },
-    canRegister: {
-        type: Boolean,
-    },
-    laravelVersion: {
-        type: String,
-        required: true,
-    },
-    phpVersion: {
-        type: String,
-        required: true,
-    },
-});
-
 function handleImageError() {
     document.getElementById('screenshot-container')?.classList.add('!hidden');
     document.getElementById('docs-card')?.classList.add('!row-span-1');
@@ -46,7 +29,7 @@ function handleImageError() {
                                 fill="currentColor"/>
                         </svg>
                     </div>
-                    <nav v-if="canLogin" class="-mx-3 flex flex-1 justify-end">
+                    <nav class="-mx-3 flex flex-1 justify-end">
                         <Link
                             v-if="$page.props.auth.user"
                             :href="route('dashboard')"
@@ -248,10 +231,6 @@ function handleImageError() {
                         </div>
                     </div>
                 </main>
-
-                <footer class="py-16 text-center text-sm text-black dark:text-white/70">
-                    Laravel v{{ laravelVersion }} (PHP v{{ phpVersion }})
-                </footer>
             </div>
         </div>
     </div>

@@ -9,7 +9,7 @@ const props = defineProps({
 <template>
     <div class="max-w-6xl mx-auto">
         <ul class="divide-y divide-gray-100" role="list">
-            <template v-for="user in users" :key="user.id">
+            <template v-for="user in users" :key="user">
                 <Link :href="route('userProfile', user)">
                     <li class="flex justify-between gap-x-6 py-5">
                         <div class="flex min-w-0 gap-x-4">

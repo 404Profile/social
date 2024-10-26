@@ -6,17 +6,12 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\ThreadController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
+    return Inertia::render('Welcome');
 });
 
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->group(function () {
@@ -48,4 +43,29 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
     });
 
     Route::get('/allUsers', [FriendController::class, 'allUsers'])->name('friends.allUsers');
+
+    Route::prefix('threads')->name('threads.')->controller(ThreadController::class)->group(function () {
+        Route::get('', 'index')->name('index');
+        Route::get('{thread:id}', 'show')->name('show');
+        Route::post('store', 'store')->name('store');
+        Route::post('{thread:id}/message', 'message')->name('message');
+        Route::get('{thread:id}/fetchMessages', 'fetchMessages')->name('fetchMessages');
+        Route::get('{thread:id}/{length}/loadMore', 'loadMore')->name('loadMore');
+
+        Route::get('{thread:id}/fetchImages', 'fetchImages')->name('fetchImages');
+        Route::get('{thread:id}/fetchDocuments', 'fetchDocuments')->name('fetchDocuments');
+        Route::get('{thread:id}/fetchAudios', 'fetchAudios')->name('fetchAudios');
+        Route::get('{thread:id}/fetchVideos', 'fetchVideos')->name('fetchVideos');
+        Route::get('{thread:id}/loadMoreFetchImages/{page}', 'loadMoreFetchImages')
+            ->name('loadMoreFetchImages');
+        Route::get('{thread:id}/loadMoreFetchDocuments/{page}', 'loadMoreFetchDocuments')
+            ->name('loadMoreFetchDocuments');
+        Route::get('{thread:id}/loadMoreFetchAudios/{page}', 'loadMoreFetchAudios')
+            ->name('loadMoreFetchAudios');
+        Route::get('{thread:id}/loadMoreFetchVideos/{page}', 'loadMoreFetchVideos')
+            ->name('loadMoreFetchVideos');
+        Route::get('fetchFriends', 'fetchFriends')->name('fetchFriends');
+        Route::post('{thread:id}/addFriendsToGroup', 'addFriendsToGroup')
+            ->name('addFriendsToGroup');
+    });
 });

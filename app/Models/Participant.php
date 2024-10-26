@@ -33,6 +33,7 @@ class Participant extends Model
         'user_id',
         'admin',
         'muted',
+        'last_read',
     ];
 
     protected $dateFormat = 'Y-m-d H:i:s.u';

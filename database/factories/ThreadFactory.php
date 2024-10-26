@@ -17,9 +17,9 @@ class ThreadFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => fake()->title,
-            'type' => fake()->randomElement(['private', 'group']),
-            'image' => fake()->imageUrl(),
+            'title' => fake()->text(),
+            'type' => rand(1, 2),
+            'image' => null,
         ];
     }
 }

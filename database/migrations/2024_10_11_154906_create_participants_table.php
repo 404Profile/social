@@ -12,10 +12,11 @@ return new class extends Migration {
     {
         Schema::create('participants', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('thread_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('thread_id')->references('id')->on('threads')->cascadeOnDelete();
+            $table->foreignId('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->boolean('admin')->default(false);
             $table->boolean('muted')->default(false);
+            $table->timestamp('last_read', 6)->nullable()->default(null);
             $table->timestamps();
         });
     }

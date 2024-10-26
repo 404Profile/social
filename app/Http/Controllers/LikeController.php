@@ -25,13 +25,16 @@ class LikeController extends Controller
             $post = Post::query()->findOrFail($request['post.id']);
 
             if ($likedPost) {
-                $this->unlike($request, $likedPost);
+                $this->unlike($likedPost);
             } else {
                 $this->like($request);
                 $liked = true;
             }
 
-            return response()->json(['liked' => $post->likes()->count(), 'isUserLikedPost' => $liked]);
+            return response()->json([
+                'liked' => $post->likes()->count(),
+                'isUserLikedPost' => $liked
+            ]);
         } elseif (!empty($request->media)) {
             $likedMedia = Like::query()
                 ->where('user_id', Auth::id())
@@ -42,13 +45,16 @@ class LikeController extends Controller
             $media = Media::query()->findOrFail($request['media.id']);
 
             if ($likedMedia) {
-                $this->unlike($request, $likedMedia);
+                $this->unlike($likedMedia);
             } else {
                 $this->like($request);
                 $liked = true;
             }
 
-            return response()->json(['liked' => $media->likes()->count(), 'isUserLikedMedia' => $liked]);
+            return response()->json([
+                'liked' => $media->likes()->count(),
+                'isUserLikedMedia' => $liked
+            ]);
         } elseif (!empty($request->comment)) {
             $likedComment = Like::query()
                 ->where('user_id', Auth::id())
@@ -59,17 +65,20 @@ class LikeController extends Controller
             $comment = Comment::query()->findOrFail($request['comment.id']);
 
             if ($likedComment) {
-                $this->unlike($request, $likedComment);
+                $this->unlike($likedComment);
             } else {
                 $this->like($request);
                 $liked = true;
             }
 
-            return response()->json(['liked' => $comment->likes()->count(), 'isUserLikedComment' => $liked]);
+            return response()->json([
+                'liked' => $comment->likes()->count(),
+                'isUserLikedComment' => $liked
+            ]);
         }
     }
 
-    public function unlike(Request $request, $likedElement)
+    public function unlike($likedElement)
     {
         $likedElement->delete();
     }

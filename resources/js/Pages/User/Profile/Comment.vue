@@ -81,7 +81,7 @@ const deleteComment = (comment) => {
 
         <div
             :class="post ? 'w-full max-w-7xl mx-auto px-4' : 'md:fixed md:top-[17rem] md:right-0 md:bottom-5 overflow-y-auto block md:w-1/3'">
-            <template v-for="comment in currentElement.comments">
+            <template v-for="comment in currentElement.comments" :key="comment">
                 <div
                     :class="post ? 'w-full' : 'max-w-3xl'"
                     class="relative bg-slate-50 rounded-xl overflow-hidden dark:bg-slate-800/25 mx-auto mx-4 mb-6">

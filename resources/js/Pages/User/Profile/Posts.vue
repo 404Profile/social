@@ -93,7 +93,7 @@ const clickedPost = (post) => {
 
 <template>
     <div>
-        <template v-for="post in posts">
+        <template v-for="post in posts" :key="post">
             <div class="relative bg-slate-50 rounded-xl overflow-hidden dark:bg-slate-800/25 max-w-3xl mx-auto mb-6"
                  data-page="post" @click="clickedPost(post)">
                 <div class="relative rounded-xl overflow-auto p-8">
@@ -122,7 +122,8 @@ const clickedPost = (post) => {
 
                             <template v-if="post.media?.length">
                                 <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-                                    <div v-for="(element, index) in post.media" class="flex items-center">
+                                    <div v-for="(element, index) in post.media" :key="element"
+                                         class="flex items-center">
                                         <div class="py-2 w-auto h-auto">
                                             <div :data-page="'media-' + index"
                                                  class="max-w-96 hover:opacity-80 cursor-pointer">
@@ -297,7 +298,7 @@ const clickedPost = (post) => {
                                 <template v-if="currentPost.media?.length">
                                     <div
                                         class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-                                        <div v-for="(element, index) in currentPost.media"
+                                        <div v-for="(element, index) in currentPost.media" :key="element"
                                              class="flex items-center">
                                             <div class="py-2 w-auto h-auto">
                                                 <div :data-page="'media-' + index"

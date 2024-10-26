@@ -26,7 +26,7 @@ class Post extends Model
      *
      * @var array
      */
-    protected $with = ['user'];
+    protected $with = ['user', 'likes'];
 
     /**
      * The accessors to append to the model's array form.
@@ -43,7 +43,7 @@ class Post extends Model
     {
         return $this->likes()->where('like', 1)
             ->where('post_id', $this->id)
-            ->where('likeable_type', '=', 'post')
+            ->where('likeable_type', 'post')
             ->count();
     }
 
@@ -54,10 +54,11 @@ class Post extends Model
 
     public function getIsUserLikedPostAttribute()
     {
-        return (bool) $this->likes()->where('like', 1)
-            ->where('post_id', $this->id)
-            ->where('likeable_type', '=', 'post')
+        return (bool) $this->likes()
             ->where('user_id', Auth::id())
+            ->where('like', 1)
+            ->where('likeable_type', 'post')
+            ->where('post_id', $this->id)
             ->count();
     }
 

@@ -19,6 +19,7 @@ const form = useForm({
 
 const createPost = () => {
     form.post(route("storePost"), {
+        preserveScroll: true,
         onSuccess: () => {
             form.reset('body', 'files');
             imageUrls.value = [];

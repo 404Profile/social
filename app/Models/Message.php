@@ -64,25 +64,7 @@ class Message extends Model
 
     protected $dateFormat = 'Y-m-d H:i:s.u';
 
-    public function isImage(): bool
-    {
-        return $this->type === self::IMAGE_MESSAGE;
-    }
-
-    public function isDocument(): bool
-    {
-        return $this->type === self::DOCUMENT_MESSAGE;
-    }
-
-    public function isAudio(): bool
-    {
-        return $this->type === self::AUDIO_MESSAGE;
-    }
-
-    public function isVideo(): bool
-    {
-        return $this->type === self::VIDEO_MESSAGE;
-    }
+    protected $appends = ['timeAgo', 'sentAt', 'fullUrl'];
 
     public function thread(): BelongsTo
     {
@@ -148,4 +130,41 @@ class Message extends Model
         return $query->where('type', '=', self::VIDEO_MESSAGE);
     }
 
+    public function getFullUrlAttribute()
+    {
+        return url($this->filepath);
+    }
+
+    public function getFilepathAttribute()
+    {
+        if ($this->isImage()) {
+            return 'storage/chat/image/'.$this->user_id.'/'.$this->created_at->format('Y').'/'.$this->created_at->format('m').'/'.$this->body;
+        } elseif ($this->isAudio()) {
+            return 'storage/chat/audio/'.$this->user_id.'/'.$this->created_at->format('Y').'/'.$this->created_at->format('m').'/'.$this->body;
+        } elseif ($this->isVideo()) {
+            return 'storage/chat/video/'.$this->user_id.'/'.$this->created_at->format('Y').'/'.$this->created_at->format('m').'/'.$this->body;
+        } elseif ($this->isDocument()) {
+            return 'storage/chat/document/'.$this->user_id.'/'.$this->created_at->format('Y').'/'.$this->created_at->format('m').'/'.$this->body;
+        }
+    }
+
+    public function isImage(): bool
+    {
+        return $this->type === self::IMAGE_MESSAGE;
+    }
+
+    public function isAudio(): bool
+    {
+        return $this->type === self::AUDIO_MESSAGE;
+    }
+
+    public function isVideo(): bool
+    {
+        return $this->type === self::VIDEO_MESSAGE;
+    }
+
+    public function isDocument(): bool
+    {
+        return $this->type === self::DOCUMENT_MESSAGE;
+    }
 }
