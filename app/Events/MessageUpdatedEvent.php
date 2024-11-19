@@ -10,7 +10,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class NewChatMessageEvent implements ShouldBroadcast
+class MessageUpdatedEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -33,5 +33,4 @@ class NewChatMessageEvent implements ShouldBroadcast
     {
         return new PrivateChannel("chat.{$this->message->thread_id}");
     }
-
 }

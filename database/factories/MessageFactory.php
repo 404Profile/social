@@ -23,7 +23,7 @@ class MessageFactory extends Factory
             'user_id' => User::query()->inRandomOrder()->first()->id,
             'type' => fake()->numberBetween(0, 4),
             'body' => fake()->text(),
-            'reply_to_id' => fake()->boolean(),
+            'reply_to_id' => null,
             'edited' => fake()->boolean(),
         ];
     }

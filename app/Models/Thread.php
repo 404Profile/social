@@ -14,18 +14,22 @@ class Thread extends Model
 
     const PRIVATE = 1;
     const GROUP = 2;
+    const PINNED_PRIVATE = 3;
     const TYPE = [
         1 => 'PRIVATE',
         2 => 'GROUP',
+        3 => 'PINNED_PRIVATE',
     ];
+
     protected $fillable = [
         'title',
         'type',
         'image',
     ];
+
     protected $appends = [
         'userUnreadMessagesCount', 'latestMessage', 'lastMessageTimeAgo', 'imageThread', 'titleThread',
-        'userPrivateThread',
+        'userPrivateThread', 'participantsCount', 'authUserAdminType',
     ];
 
     public static function getAllLatest()
@@ -38,12 +42,40 @@ class Thread extends Model
         return static::where('subject', 'like', $subject)->get();
     }
 
+    public function getAuthUserAdminTypeAttribute()
+    {
+        return $this->getParticipantFromUser(Auth::id())->admin;
+    }
+
+    public function getParticipantFromUser($userId)
+    {
+        return $this->participants()->where('user_id', $userId)->firstOrFail();
+    }
+
+    public function participants()
+    {
+        return $this->hasMany(Participant::class, 'thread_id', 'id');
+    }
+
+    public function scopeForUser(Builder $query, $userId)
+    {
+        $participantsTable = 'participants';
+        $threadsTable = 'threads';
+
+        return $query->join($participantsTable, $this->getQualifiedKeyName(), '=', $participantsTable.'.thread_id')
+            ->where($participantsTable.'.user_id', $userId)
+            ->whereNull($participantsTable.'.deleted_at')
+            ->select($threadsTable.'.*');
+    }
+
     public function getImageThreadAttribute()
     {
         if ($this->isGroup()) {
             return $this->imageGroupThread();
         } elseif ($this->isPrivate()) {
             return $this->imagePrivateThread();
+        } elseif ($this->isPinnedPrivate()) {
+            return Auth::user()->profile_photo_url;
         }
     }
 
@@ -56,7 +88,7 @@ class Thread extends Model
     {
         if ($this->isGroup()) {
             if ($this->image == null) {
-                return 'https://ru-static.z-dn.net/files/d3b/f593eaec9976bb45317692d04609f94f.jpg';
+                return asset('assets/threadGroup.jpg');
             } else {
                 return url('storage/threads/'.$this->image);
             }
@@ -71,10 +103,15 @@ class Thread extends Model
     public function imagePrivateThread()
     {
         if ($this->isPrivate()) {
+            $image = '';
+
             foreach ($this->recipient() as $recipient):
-                $user = User::query()->whereNot('id', Auth::id())->firstOrFail();
+                if ($recipient->user['id'] !== Auth::id()) {
+                    $image = $recipient->user['profile_photo_url'];
+                }
             endforeach;
-            return $user['profile_photo_url'];
+
+            return $image;
         }
     }
 
@@ -88,23 +125,42 @@ class Thread extends Model
         return $recipients;
     }
 
+    public function isPinnedPrivate(): bool
+    {
+        return $this->type == self::PINNED_PRIVATE;
+    }
+
     public function getTitleThreadAttribute()
     {
+        $title = '';
         if ($this->isGroup()) {
-            return $this->title;
+            $title = $this->title;
         } elseif ($this->isPrivate()) {
             foreach ($this->recipient() as $recipient):
-                $user = User::query()->whereNot('id', Auth::id())->firstOrFail();
+                if ($recipient->user['id'] !== Auth::id()) {
+                    $title = $recipient->user['fullName'];
+                }
             endforeach;
-            return $user['fullName'];
+        } elseif ($this->isPinnedPrivate()) {
+            if (strlen(Auth::user()->fullName) > 40) {
+                return substr(Auth::user()->fullName, 0, 40).'...';
+            }
+
+            return Auth::user()->fullName;
         }
+
+        if (strlen($title) > 40) {
+            return substr($title, 0, 40).'...';
+        }
+
+        return $title;
     }
 
     public function getUserPrivateThreadAttribute()
     {
         if ($this->isPrivate()) {
             foreach ($this->recipient() as $recipient):
-                $user = User::query()->whereNot('id', Auth::id())->first();
+                $user = $recipient->user;
             endforeach;
             return $user;
         }
@@ -130,14 +186,8 @@ class Thread extends Model
     public function users()
     {
         return $this
-            ->belongsToMany(
-                User::class,
-                'participants',
-                'thread_id',
-                'user_id'
-            )
-            ->whereNull('participants.deleted_at')
-            ->withTimestamps();
+            ->belongsToMany(User::class, 'participants', 'thread_id', 'user_id')
+            ->withTimestamps()->withPivot('admin')->orderByPivot('created_at');
     }
 
     public function participantsUserIds($userId = null)
@@ -153,20 +203,9 @@ class Thread extends Model
         return $users->toArray();
     }
 
-    public function participants()
+    public function getParticipantsCountAttribute()
     {
-        return $this->hasMany(Participant::class, 'thread_id', 'id');
-    }
-
-    public function scopeForUser(Builder $query, $userId)
-    {
-        $participantsTable = 'participants';
-        $threadsTable = 'threads';
-
-        return $query->join($participantsTable, $this->getQualifiedKeyName(), '=', $participantsTable.'.thread_id')
-            ->where($participantsTable.'.user_id', $userId)
-            ->whereNull($participantsTable.'.deleted_at')
-            ->select($threadsTable.'.*');
+        return $this->participants()->count();
     }
 
     public function addParticipant($userId)
@@ -197,11 +236,6 @@ class Thread extends Model
         } catch (ModelNotFoundException $e) { // @codeCoverageIgnore
             // do nothing
         }
-    }
-
-    public function getParticipantFromUser($userId)
-    {
-        return $this->participants()->where('user_id', $userId)->firstOrFail();
     }
 
     public function isUnread($userId)
@@ -262,6 +296,4 @@ class Thread extends Model
     {
         return $this->userUnreadMessages(Auth::id())->count();
     }
-
-
 }

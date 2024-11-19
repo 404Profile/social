@@ -47,10 +47,15 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
     Route::prefix('threads')->name('threads.')->controller(ThreadController::class)->group(function () {
         Route::get('', 'index')->name('index');
         Route::get('{thread:id}', 'show')->name('show');
+        Route::put('{thread:id}', 'update')->name('update');
         Route::post('store', 'store')->name('store');
         Route::post('{thread:id}/message', 'message')->name('message');
+        Route::put('{thread:id}/message', 'updateMessage')->name('updateMessage');
+        Route::delete('message/{message:id}', 'deleteMessage')->name('deleteMessage');
         Route::get('{thread:id}/fetchMessages', 'fetchMessages')->name('fetchMessages');
         Route::get('{thread:id}/{length}/loadMore', 'loadMore')->name('loadMore');
+        Route::post('{thread:id}/leaveParticipant', 'leaveParticipant')->name('leaveParticipant');
+        Route::post('{thread:id}/addFriendsToThread', 'addFriendsToThread')->name('addFriendsToThread');
 
         Route::get('{thread:id}/fetchImages', 'fetchImages')->name('fetchImages');
         Route::get('{thread:id}/fetchDocuments', 'fetchDocuments')->name('fetchDocuments');
@@ -64,8 +69,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
             ->name('loadMoreFetchAudios');
         Route::get('{thread:id}/loadMoreFetchVideos/{page}', 'loadMoreFetchVideos')
             ->name('loadMoreFetchVideos');
-        Route::get('fetchFriends', 'fetchFriends')->name('fetchFriends');
-        Route::post('{thread:id}/addFriendsToGroup', 'addFriendsToGroup')
-            ->name('addFriendsToGroup');
+        Route::get('{thread:id}/fetchFriends', 'fetchFriends')->name('fetchFriends');
+        Route::get('{thread:id}/getPeople', 'getPeople')->name('getPeople');
     });
+
+    Route::post('startMessage/{user}', [ThreadController::class, 'startMessage'])->name('startMessage');
 });

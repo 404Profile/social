@@ -34,8 +34,6 @@ class User extends Authenticatable
         'email',
         'private',
         'age',
-        'country',
-        'city',
         'gender',
         'about',
         'password',
@@ -103,6 +101,16 @@ class User extends Authenticatable
     public function comments()
     {
         return $this->hasMany(Comment::class);
+    }
+
+    public function cities()
+    {
+        return $this->hasOne(City::class);
+    }
+
+    public function countries()
+    {
+        return $this->hasOne(Country::class);
     }
 
     /**

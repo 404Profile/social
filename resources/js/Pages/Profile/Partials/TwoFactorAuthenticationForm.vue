@@ -1,6 +1,6 @@
 <script setup>
-import { ref, computed, watch } from 'vue';
-import { router, useForm, usePage } from '@inertiajs/vue3';
+import {computed, ref, watch} from 'vue';
+import {router, useForm, usePage} from '@inertiajs/vue3';
 import ActionSection from '@/Components/ActionSection.vue';
 import ConfirmsPassword from '@/Components/ConfirmsPassword.vue';
 import DangerButton from '@/Components/DangerButton.vue';
@@ -165,12 +165,12 @@ const disableTwoFactorAuthentication = () => {
                         <TextInput
                             id="code"
                             v-model="confirmationForm.code"
-                            type="text"
-                            name="code"
+                            autocomplete="one-time-code"
+                            autofocus
                             class="block mt-1 w-1/2"
                             inputmode="numeric"
-                            autofocus
-                            autocomplete="one-time-code"
+                            name="code"
+                            type="text"
                             @keyup.enter="confirmTwoFactorAuthentication"
                         />
 
@@ -199,7 +199,7 @@ const disableTwoFactorAuthentication = () => {
             <div class="mt-5">
                 <div v-if="! twoFactorEnabled">
                     <ConfirmsPassword @confirmed="enableTwoFactorAuthentication">
-                        <PrimaryButton type="button" :class="{ 'opacity-25': enabling }" :disabled="enabling">
+                        <PrimaryButton :class="{ 'opacity-25': enabling }" :disabled="enabling" type="button">
                             Включить
                         </PrimaryButton>
                     </ConfirmsPassword>
@@ -209,10 +209,10 @@ const disableTwoFactorAuthentication = () => {
                     <ConfirmsPassword @confirmed="confirmTwoFactorAuthentication">
                         <PrimaryButton
                             v-if="confirming"
-                            type="button"
-                            class="me-3"
                             :class="{ 'opacity-25': enabling }"
                             :disabled="enabling"
+                            class="me-3"
+                            type="button"
                         >
                             Подтвердить
                         </PrimaryButton>

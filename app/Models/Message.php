@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Message extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     const MESSAGE = 0;
     const IMAGE_MESSAGE = 1;
@@ -26,7 +28,7 @@ class Message extends Model
     const PARTICIPANT_REMOVED = 202;
     const DEMOTED_ADMIN = 301;
     const PROMOTED_ADMIN = 302;
-
+    const SEND_USER = 400;
     const NonSystemTypes = [
         self::MESSAGE,
         self::IMAGE_MESSAGE,
@@ -34,7 +36,6 @@ class Message extends Model
         self::AUDIO_MESSAGE,
         self::VIDEO_MESSAGE,
     ];
-
     const TYPE = [
         0 => 'MESSAGE',
         1 => 'IMAGE_MESSAGE',
@@ -58,17 +59,21 @@ class Message extends Model
         'thread_id',
         'user_id',
         'type',
+        'edited',
         'body',
         'reply_to_id',
     ];
-
     protected $dateFormat = 'Y-m-d H:i:s.u';
-
     protected $appends = ['timeAgo', 'sentAt', 'fullUrl'];
 
     public function thread(): BelongsTo
     {
         return $this->belongsTo(Thread::class);
+    }
+
+    public function replyTo()
+    {
+        return $this->hasOne(Message::class, 'id', 'reply_to_id')->with('user');
     }
 
     public function recipients(): BelongsTo

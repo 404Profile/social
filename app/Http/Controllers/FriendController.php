@@ -13,7 +13,7 @@ class FriendController extends Controller
 {
     public function allUsers()
     {
-        $users = User::query()->whereNot('id', Auth::id())->paginate(10);
+        $users = User::query()->whereNot('id', Auth::id())->paginate(100);
 
         return Inertia::render('User/Friends/Users', [
             'users' => $users,
@@ -58,7 +58,7 @@ class FriendController extends Controller
             return Redirect::back()->with('error', 'Данный пользователь не найден');
         }
 
-        Auth::user()->addFriend($user->id); 
+        Auth::user()->addFriend($user->id);
         return Redirect::back();
     }
 

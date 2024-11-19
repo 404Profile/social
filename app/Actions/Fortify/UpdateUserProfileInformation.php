@@ -24,8 +24,6 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:1024'],
             'private' => ['nullable', 'boolean', 'max:5'],
             'age' => ['required', 'numeric', 'between:18,100'],
-            'country' => ['nullable', 'string', 'max:255'],
-            'city' => ['nullable', 'string', 'max:255'],
             'gender' => ['required', 'string', 'max:1', 'regex:/^[MF]$/'],
             'about' => ['nullable', 'string', 'max:255'],
         ])->validateWithBag('updateProfileInformation');
@@ -44,8 +42,6 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 'email' => $input['email'],
                 'private' => $input['private'],
                 'age' => $input['age'],
-                'country' => $input['country'],
-                'city' => $input['city'],
                 'gender' => $input['gender'],
                 'about' => $input['about'],
             ])->save();
@@ -65,8 +61,6 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             'email' => $input['email'],
             'private' => $input['private'],
             'age' => $input['age'],
-            'country' => $input['country'],
-            'city' => $input['city'],
             'gender' => $input['gender'],
             'about' => $input['about'],
             'email_verified_at' => null,

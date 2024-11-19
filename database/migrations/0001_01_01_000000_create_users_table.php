@@ -18,8 +18,6 @@ return new class extends Migration {
             $table->timestamp('email_verified_at')->nullable();
             $table->boolean('private')->default(false);
             $table->integer('age');
-            $table->string('country')->nullable();
-            $table->string('city')->nullable();
             $table->char('gender', 1);
             $table->string('about')->nullable();
             $table->string('password');

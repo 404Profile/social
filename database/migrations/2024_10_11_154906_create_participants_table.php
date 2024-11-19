@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('thread_id')->references('id')->on('threads')->cascadeOnDelete();
             $table->foreignId('user_id')->references('id')->on('users')->cascadeOnDelete();
-            $table->boolean('admin')->default(false);
+            $table->integer('admin')->default(0);
             $table->boolean('muted')->default(false);
             $table->timestamp('last_read', 6)->nullable()->default(null);
             $table->timestamps();

@@ -19,8 +19,6 @@ const form = useForm({
     surname: props.user.surname,
     private: !!props.user.private,
     age: props.user.age + '',
-    country: props.user.country,
-    city: props.user.city,
     gender: props.user.gender,
     about: props.user.about,
     email: props.user.email,
@@ -230,32 +228,6 @@ const clearPhotoFileInput = () => {
                 />
 
                 <InputError :message="form.errors.age" class="mt-2"/>
-            </div>
-
-            <div class="col-span-6 sm:col-span-4">
-                <InputLabel for="country" value="Страна проживания"/>
-                <TextInput
-                    id="country"
-                    v-model="form.country"
-                    autocomplete="country"
-                    class="mt-1 block w-full"
-                    type="text"
-                />
-
-                <InputError :message="form.errors.country" class="mt-2"/>
-            </div>
-
-            <div class="col-span-6 sm:col-span-4">
-                <InputLabel for="city" value="Город проживания"/>
-                <TextInput
-                    id="city"
-                    v-model="form.city"
-                    autocomplete="city"
-                    class="mt-1 block w-full"
-                    type="text"
-                />
-
-                <InputError :message="form.errors.city" class="mt-2"/>
             </div>
 
             <div class="col-span-6 sm:col-span-4">

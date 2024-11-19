@@ -12,8 +12,8 @@ return new class extends Migration {
     {
         Schema::create('threads', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->string('type');
+            $table->string('title')->nullable();
+            $table->integer('type');
             $table->string('image')->nullable();
             $table->timestamps();
         });

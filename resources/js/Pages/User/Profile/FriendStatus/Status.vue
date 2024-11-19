@@ -70,6 +70,10 @@ const canselRequest = () => {
         },
     });
 }
+
+const startMessage = () => {
+    router.post(route('startMessage', props.user));
+}
 </script>
 
 <template>
@@ -127,5 +131,11 @@ const canselRequest = () => {
                 Добавить в друзья
             </button>
         </template>
+
+        <button
+            class="mt-2 sm:mt-0 sm:ml-3 bg-amber-500 px-2 py-1 text-white font-semibold text-sm rounded block text-center sm:inline-block block"
+            @click="startMessage">
+            Написать сообщение
+        </button>
     </div>
 </template>

@@ -13,19 +13,19 @@ class Participant extends Model
 
     const DefaultPermissions = [
         'admin' => 0,
-        'muted' => true,
+        'muted' => false,
     ];
 
     const AdminPermissions = [
         'admin' => 1,
         'add_participants' => true,
-        'muted' => true,
+        'muted' => false,
     ];
 
     const CreatorPermissions = [
         'admin' => 2,
         'add_participants' => true,
-        'muted' => true,
+        'muted' => false,
     ];
 
     protected $fillable = [
@@ -50,7 +50,7 @@ class Participant extends Model
 
     public function scopeAdmins(Builder $query): Builder
     {
-        return $query->where('admin', '=', 1);
+        return $query->where('admin', '>=', 1);
     }
 
     public function scopeCreator(Builder $query): Builder

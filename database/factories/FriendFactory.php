@@ -19,7 +19,7 @@ class FriendFactory extends Factory
     {
         $requester = User::query()->inRandomOrder()->first()->id;
         $user_requested = User::query()->whereNot('id', $requester)->inRandomOrder()->first()->id;
-        
+
         return [
             'requester' => $requester,
             'user_requested' => $user_requested,

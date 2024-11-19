@@ -15,10 +15,11 @@ return new class extends Migration {
             $table->foreignId('thread_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->integer('type')->index();
-            $table->text('body');
-            $table->uuid('reply_to_id')->nullable()->index();
+            $table->text('body')->nullable();
+            $table->foreignId('reply_to_id')->nullable()->references('id')->on('messages')->nullOnDelete();
             $table->boolean('edited')->default(false);
             $table->timestamps(6);
+            $table->softDeletes();
         });
     }
 
